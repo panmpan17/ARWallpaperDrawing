@@ -7,14 +7,12 @@ using UnityEngine.EventSystems;
 public class DrawCanvas : MonoBehaviour, IDragHandler, IBeginDragHandler
 {
     [SerializeField]
+    private DrawModeControl drawModeControl;
+
+    [SerializeField]
     private RawImage rawImage;
     [SerializeField]
     private Color resetColor;
-    [SerializeField]
-    private Color penColor;
-
-    [SerializeField]
-    private SpriteRenderer spriteRenderer;
     [SerializeField]
     private Renderer meshRenderer;
 
@@ -53,7 +51,7 @@ public class DrawCanvas : MonoBehaviour, IDragHandler, IBeginDragHandler
         curColors = _drawTexture.GetPixels32();
 
         Vector2 nextPosition = new Vector2(delta.x, delta.y);
-        ColourBetween(_previousPosition, nextPosition, 10, Color.red);
+        ColourBetween(_previousPosition, nextPosition, 10, drawModeControl.PenColor);
         ApplyMarkedPixelChanges();
 
         _previousPosition = nextPosition;
@@ -75,9 +73,12 @@ public class DrawCanvas : MonoBehaviour, IDragHandler, IBeginDragHandler
         _drawTexture.SetPixels(colors);
         _drawTexture.Apply();
 
-        MaterialPropertyBlock block = new MaterialPropertyBlock();
-        block.SetTexture("_MainTex", _drawTexture);
-        meshRenderer.SetPropertyBlock(block);
+        if (meshRenderer)
+        {
+            MaterialPropertyBlock block = new MaterialPropertyBlock();
+            block.SetTexture("_MainTex", _drawTexture);
+            meshRenderer.SetPropertyBlock(block);
+        }
     }
 
 
