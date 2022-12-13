@@ -5,16 +5,30 @@ using UnityEngine;
 public class FloatingImageManager : MonoBehaviour
 {
     [SerializeField]
+    private RectTransform imageRectTransform;
+    [SerializeField]
+    private DrawingPresent drawingPresent;
+    [SerializeField]
     private GameObject resizableImage;
-    // [SerializeField]
-    // private Sprite[] avalibleImages;
+    
+    private List<ResizableImage> _resizableImages;
 
-    // public void AddImage(int index)
-    // {}
+    void Awake()
+    {
+        _resizableImages = new List<ResizableImage>();
+    }
 
     public void AddImage(Sprite sprite)
     {
         GameObject newObj = Instantiate(resizableImage, transform);
-        newObj.GetComponent<ResizableImage>().ChangeImage(sprite);
+        var image = newObj.GetComponent<ResizableImage>();
+        image.ChangeImage(sprite);
+
+        _resizableImages.Add(image);
+    }
+
+    public void Save()
+    {
+        drawingPresent.PresentFloatingImage(imageRectTransform, _resizableImages);
     }
 }

@@ -292,7 +292,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 99aa6f22e13cc4ad8a21d44db6bb8e3d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  resizableImage: {fileID: 0}
+  drawingPresent: {fileID: 0}
+  resizableImage: {fileID: 5881351288637971660, guid: c5b97f1d7417244758650b7e74ce8075, type: 3}
 --- !u!1 &4173486839280119500
 GameObject:
   m_ObjectHideFlags: 0
@@ -894,6 +895,18 @@ MonoBehaviour:
         m_TargetAssemblyTypeName: UnityEngine.Behaviour, UnityEngine
         m_MethodName: set_enabled
         m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 5193454434580926317}
+        m_TargetAssemblyTypeName: FloatingImageManager, Assembly-CSharp
+        m_MethodName: Save
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine

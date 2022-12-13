@@ -10,6 +10,14 @@ public class ResizableImage : MonoBehaviour
     [SerializeField]
     private RectTransform resizeButton;
 
+    public RectTransform RectTransform { get; protected set; }
+    public Sprite Sprite => mainImage.sprite;
+
+    void Awake()
+    {
+        RectTransform = GetComponent<RectTransform>();
+    }
+
     public void ChangeImage(Sprite sprite)
     {
         mainImage.sprite = sprite;
