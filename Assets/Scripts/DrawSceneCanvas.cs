@@ -1,63 +1,37 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-public class DrawCanvas : MonoBehaviour, IDragHandler, IBeginDragHandler
+
+public class DrawSceneCanvas : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, IDragHandler
 {
+    [SerializeField]
+    private MeshRenderer meshRenderer;
+    [SerializeField]
+    private Vector2Int canvasSize;
+    [SerializeField]
+    private Color resetColor = new Color(1, 1, 1, 0);
+
+    [SerializeField]
+    private Transform bottomLeft;
+    [SerializeField]
+    private Transform topRight;
+
     [SerializeField]
     private DrawModeControl drawModeControl;
 
-    [SerializeField]
-    private RawImage rawImage;
-    [SerializeField]
-    private Color resetColor;
-    [SerializeField]
-    private Renderer meshRenderer;
-
     private Texture2D _drawTexture;
-    private RectTransform rectTransform;
-
-    [SerializeField]
-    private int brushSize = 10;
-    // private Color[] brushColors;
-    private Color32[] curColors;
-    
-    private Vector2Int _imageSizeInt;
+    private Vector3 _size;
+    private Color32[] _curColors;
     private Vector2 _previousPosition;
-
-
-
-    public void OnBeginDrag(PointerEventData eventData)
-    {
-        Vector2 delta = eventData.position - (Vector2)transform.position;
-        _previousPosition = new Vector2(delta.x, delta.y);
-    }
-
-    public void OnDrag(PointerEventData eventData)
-    {
-        Vector2 delta = eventData.position - (Vector2)transform.position;
-        Vector2 nextPosition = new Vector2(delta.x, delta.y);
-        curColors = _drawTexture.GetPixels32();
-
-        ColourBetween(_previousPosition, nextPosition, 10, drawModeControl.PenColor);
-        ApplyMarkedPixelChanges();
-
-        _previousPosition = nextPosition;
-    }
 
     void Awake()
     {
-        rectTransform = GetComponent<RectTransform>();
-
-        Vector2 imageSize = rawImage.rectTransform.sizeDelta;
-        _imageSizeInt = new Vector2Int(Mathf.FloorToInt(imageSize.x), Mathf.FloorToInt(imageSize.y));
-        _drawTexture = new Texture2D(_imageSizeInt.x, _imageSizeInt.y, TextureFormat.RGBA32, 1, true);
-        rawImage.texture = _drawTexture;
+        _drawTexture = new Texture2D(canvasSize.x, canvasSize.y, TextureFormat.RGBA32, 1, true);
 
         // Set transparent color
-        Color[] colors = new Color[_imageSizeInt.x * _imageSizeInt.y];
+        Color[] colors = new Color[canvasSize.x * canvasSize.y];
         Color transparent = new Color(1, 1, 1, 0);
         for (int i = 0; i < colors.Length; i++) colors[i] = resetColor;
         _drawTexture.SetPixels(colors);
@@ -69,12 +43,56 @@ public class DrawCanvas : MonoBehaviour, IDragHandler, IBeginDragHandler
             block.SetTexture("_MainTex", _drawTexture);
             meshRenderer.SetPropertyBlock(block);
         }
+
+        _size = topRight.position - bottomLeft.position;
     }
+
+    Vector2 ConvertRaycastPointToCanvasPosition(Vector3 position)
+    {
+        // Vector3 delta = position - bottomLeft.position;
+        // Vector2 uvPosition = new Vector2(delta.x / _size.x, delta.y / _size.y);
+        // return new Vector2(uvPosition.x * canvasSize.x, uvPosition.y * canvasSize.y);
+
+        Vector3 localPoint = transform.InverseTransformPoint(position);
+        Vector3 delta = localPoint - bottomLeft.localPosition;
+        // Vector2 uvPosition = new Vector2(delta.x / _size.x, delta.y / _size.y);
+        return new Vector2(delta.x * canvasSize.x, delta.y * canvasSize.y);
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        // Vector3 position = eventData.pointerPressRaycast.worldPosition;
+
+        // Vector3 delta = position - bottomLeft.position;
+        // Vector2 uvPosition = new Vector2(delta.x /  _size.x, delta.y / _size.y);
+
+        // Vector2 canvasPosition = new Vector2(uvPosition.x * canvasSize.x, uvPosition.y * canvasSize.y);
+        // Debug.Log(canvasPosition);
+    }
+
+    public void OnBeginDrag(PointerEventData eventData)
+    {
+        _previousPosition = ConvertRaycastPointToCanvasPosition(eventData.pointerPressRaycast.worldPosition);;
+    }
+
+    public void OnDrag(PointerEventData eventData)
+    {
+        Vector2 nextPosition = ConvertRaycastPointToCanvasPosition(eventData.pointerCurrentRaycast.worldPosition);
+
+        _curColors = _drawTexture.GetPixels32();
+
+        ColourBetween(_previousPosition, nextPosition, 10, drawModeControl.PenColor);
+        ApplyMarkedPixelChanges();
+
+        _previousPosition = nextPosition;
+    }
+
+
 
 
     public void ApplyMarkedPixelChanges()
     {
-        _drawTexture.SetPixels32(curColors);
+        _drawTexture.SetPixels32(_curColors);
         _drawTexture.Apply();
     }
 
@@ -106,7 +124,7 @@ public class DrawCanvas : MonoBehaviour, IDragHandler, IBeginDragHandler
         for (int x = center_x - pen_thickness; x <= center_x + pen_thickness; x++)
         {
             // Check if the X wraps around the image, so we don't draw pixels on the other side of the image
-            if (x >= (int)_imageSizeInt.x || x < 0)
+            if (x >= (int)canvasSize.x || x < 0)
                 continue;
 
             for (int y = center_y - pen_thickness; y <= center_y + pen_thickness; y++)
@@ -119,12 +137,12 @@ public class DrawCanvas : MonoBehaviour, IDragHandler, IBeginDragHandler
     public void MarkPixelToChange(int x, int y, Color color)
     {
         // Need to transform x and y coordinates to flat coordinates of array
-        int array_pos = y * (int)_imageSizeInt.x + x;
+        int array_pos = y * (int)canvasSize.x + x;
 
         // Check if this is a valid position
-        if (array_pos > curColors.Length || array_pos < 0)
+        if (array_pos > _curColors.Length || array_pos < 0)
             return;
 
-        curColors[array_pos] = color;
+        _curColors[array_pos] = color;
     }
 }
