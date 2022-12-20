@@ -6,6 +6,8 @@ public class DrawingPresent : MonoBehaviour
 {
     [SerializeField]
     private SpriteRenderer spriteRendererPrefab;
+    [SerializeField]
+    private float sizeMultiplier;
 
     private List<GameObject> _spriteRenderers = new List<GameObject>();
 
@@ -36,7 +38,7 @@ public class DrawingPresent : MonoBehaviour
             Vector3 localPosition = resizableImage.RectTransform.anchoredPosition / rectTransform.sizeDelta;
             localPosition.z = -0.1f;
             _transform.localPosition = localPosition;
-            _transform.localScale = scaleToImage;
+            _transform.localScale = scaleToImage * sizeMultiplier;
             spriteRenderer.gameObject.SetActive(true);
 
             _spriteRenderers.Add(spriteRenderer.gameObject);
