@@ -1,7 +1,7 @@
 {
   "dependencies": {
     "com.easyar.sense": {
-      "version": "file:/Users/michael/Library/Mobile Documents/com~apple~CloudDocs/Downloads/EasyARSenseUnityPlugin_4-2/com.easyar.sense-4.4.0+2424.469da7da.tgz",
+      "version": "file:/Volumes/MICHAEL/EasyARSenseUnityPlugin_4/com.easyar.sense-4.4.0+2424.469da7da.tgz",
       "depth": 0,
       "source": "local-tarball",
       "dependencies": {

@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "com.easyar.sense": "file:/Users/michael/Library/Mobile Documents/com~apple~CloudDocs/Downloads/EasyARSenseUnityPlugin_4-2/com.easyar.sense-4.4.0+2424.469da7da.tgz",
+    "com.easyar.sense": "file:/Volumes/MICHAEL/EasyARSenseUnityPlugin_4/com.easyar.sense-4.4.0+2424.469da7da.tgz",
     "com.unity.2d.sprite": "1.0.0",
     "com.unity.collab-proxy": "1.15.15",
     "com.unity.ide.rider": "3.0.13",
