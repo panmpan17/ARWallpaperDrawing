@@ -1,7 +1,7 @@
 {
   "dependencies": {
     "com.easyar.sense": {
-      "version": "file:/Volumes/MICHAEL/EasyARSenseUnityPlugin_4/com.easyar.sense-4.4.0+2424.469da7da.tgz",
+      "version": "file:/Users/michael/NonBackup/com.easyar.sense-4.4.0+2424.469da7da.tgz",
       "depth": 0,
       "source": "local-tarball",
       "dependencies": {
